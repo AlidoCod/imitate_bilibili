@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.demo.core.dao.UserMapper">
+    <sql id="select_user_condition">
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+
+            <if test="username != null">
+                and username = #{username}
+            </if>
+
+            <if test="nickname != null">
+                and nickname = #{nickname}
+            </if>
+
+            <if test="password != null">
+                and password = #{password}
+            </if>
+
+            <if test="email != null">
+                and email = #{email}
+            </if>
+
+            <if test="avatarUrl != null">
+                and avatar_url = #{avatarUrl}
+            </if>
+
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+
+            <if test="role != null">
+                and role = #{role}
+            </if>
+
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="insert_user_field">
+        <trim suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+
+            <if test="username != null">
+                username,
+            </if>
+
+            <if test="nickname != null">
+                nickname,
+            </if>
+
+            <if test="password != null">
+                password,
+            </if>
+
+            <if test="email != null">
+                email,
+            </if>
+
+            <if test="avatarUrl != null">
+                avatar_url,
+            </if>
+
+            <if test="createTime != null">
+                create_time,
+            </if>
+
+            <if test="updateTime != null">
+                update_time,
+            </if>
+
+            <if test="role != null">
+                role,
+            </if>
+
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="insert_user_value">
+        <trim suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+
+            <if test="username != null">
+                #{username},
+            </if>
+
+            <if test="nickname != null">
+                #{nickname},
+            </if>
+
+            <if test="password != null">
+                #{password},
+            </if>
+
+            <if test="email != null">
+                #{email},
+            </if>
+
+            <if test="avatarUrl != null">
+                #{avatar_url},
+            </if>
+
+            <if test="createTime != null">
+                #{create_time},
+            </if>
+
+            <if test="updateTime != null">
+                #{update_time},
+            </if>
+
+            <if test="role != null">
+                #{role},
+            </if>
+
+            <if test="status != null">
+                #{status},
+            </if>
+        </trim>
+    </sql>
+
+    <select id="findUserByUserDao" parameterType="User" resultType="User">
+        select * from user <include refid="select_user_condition"/>
+    </select>
+
+    <insert id="insertUserByUserDao" parameterType="User">
+        insert into user(<include refid="insert_user_field"/>) values(<include refid="insert_user_value"/>)
+    </insert>
+</mapper>
