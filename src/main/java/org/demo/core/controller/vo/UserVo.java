@@ -1,7 +1,7 @@
 package org.demo.core.controller.vo;
 
 import lombok.Data;
-import org.demo.core.entity.enums.Tag;
+import org.demo.core.pojo.enums.Tag;
 
 import java.util.List;
 

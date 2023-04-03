@@ -1,4 +1,4 @@
-package org.demo.core.entity.enums;
+package org.demo.core.pojo.enums;
 
 /**
  * 视频标签

@@ -1,8 +1,8 @@
 package org.demo.core.util;
 
-import org.demo.core.entity.enums.ResponseEnum;
-import org.demo.core.entity.enums.Role;
-import org.demo.core.entity.User;
+import org.demo.core.pojo.enums.ResponseEnum;
+import org.demo.core.pojo.enums.Role;
+import org.demo.core.pojo.User;
 import org.demo.core.exception.GlobalRuntimeException;
 
 /**
@@ -55,15 +55,4 @@ public class ThreadHolder {
         threadLocal.remove();
     }
 
-    public static String getLog() {
-        User user = getUser();
-        if (user == null)
-            return "";
-        else {
-            return "username: " +
-                    user.getUsername() +
-                    " role: " +
-                    getRole().getValue();
-        }
-    }
 }

@@ -1,4 +1,4 @@
-package org.demo.core.entity.enums;
+package org.demo.core.pojo.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 

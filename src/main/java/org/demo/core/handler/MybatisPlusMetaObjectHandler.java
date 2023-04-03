@@ -13,7 +13,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        log.info("auto insert ...");
+        log.debug("auto insert ...");
         this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, LocalDateTime.now());
     }
 

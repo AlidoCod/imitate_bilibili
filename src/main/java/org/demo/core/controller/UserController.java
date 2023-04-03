@@ -10,7 +10,7 @@ import org.demo.core.controller.dto.file.MultipartFileParamDto;
 import org.demo.core.controller.dto.user.UserUpdateDto;
 import org.demo.core.controller.vo.UserVo;
 import org.demo.core.service.UserService;
-import org.demo.core.util.JsonBean;
+import org.demo.core.controller.vo.JsonBean;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

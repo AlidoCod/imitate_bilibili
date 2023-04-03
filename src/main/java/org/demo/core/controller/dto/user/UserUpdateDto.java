@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.demo.core.entity.enums.Tag;
+import org.demo.core.pojo.enums.Tag;
 
 import java.util.List;
 

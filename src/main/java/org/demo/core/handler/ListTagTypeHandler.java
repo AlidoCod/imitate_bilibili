@@ -5,7 +5,7 @@ import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
-import org.demo.core.entity.enums.Tag;
+import org.demo.core.pojo.enums.Tag;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -36,20 +36,24 @@ public class ListTagTypeHandler extends BaseTypeHandler<List<Tag>> {
 
     @Override
     public List<Tag> getNullableResult(ResultSet resultSet, String s) throws SQLException {
-        return parseValue(resultSet.getString(s));
+        return parseValue(s);
     }
 
     @Override
     public List<Tag> getNullableResult(ResultSet resultSet, int i) throws SQLException {
-        return parseValue(resultSet.getString(i));
+        String s = resultSet.getString(i);
+        return parseValue(s);
     }
 
     @Override
     public List<Tag> getNullableResult(CallableStatement callableStatement, int i) throws SQLException {
-        return parseValue(callableStatement.getString(i));
+        String s = callableStatement.getString(i);
+        return parseValue(s);
     }
 
     private List<Tag> parseValue(String value) {
+        if (value == null || value.equals("tags"))
+            return new ArrayList<>();
         Iterable<String> values = Splitter.on(',').split(value);
         List<Tag> list = new ArrayList<>();
         values.forEach((i) -> {

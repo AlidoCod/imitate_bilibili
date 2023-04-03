@@ -1,7 +1,7 @@
 package org.demo.core.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.demo.core.entity.Video;
+import org.demo.core.pojo.Video;
 import org.springframework.stereotype.Repository;
 
 @Repository

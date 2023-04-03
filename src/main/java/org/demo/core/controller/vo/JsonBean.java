@@ -1,9 +1,9 @@
-package org.demo.core.util;
+package org.demo.core.controller.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.demo.core.entity.enums.ResponseEnum;
+import org.demo.core.pojo.enums.ResponseEnum;
 import org.demo.core.exception.GlobalRuntimeException;
 
 /**

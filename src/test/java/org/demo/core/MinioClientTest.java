@@ -1,6 +1,9 @@
 package org.demo.core;
 
-import io.minio.*;
+import io.minio.GetObjectArgs;
+import io.minio.GetObjectResponse;
+import io.minio.MinioClient;
+import io.minio.UploadObjectArgs;
 import io.minio.errors.*;
 import org.demo.core.service.MinioService;
 import org.junit.jupiter.api.Test;

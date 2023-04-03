@@ -14,7 +14,7 @@ import org.demo.core.controller.dto.LoginDto;
 import org.demo.core.controller.dto.RegisterDto;
 import org.demo.core.service.AuthenticationService;
 import org.demo.core.service.SimpleApiService;
-import org.demo.core.util.JsonBean;
+import org.demo.core.controller.vo.JsonBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;

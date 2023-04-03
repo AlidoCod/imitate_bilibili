@@ -1,6 +1,6 @@
 package org.demo.core.exception;
 
-import org.demo.core.entity.enums.ResponseEnum;
+import org.demo.core.pojo.enums.ResponseEnum;
 
 public class GlobalRuntimeException extends RuntimeException{
 

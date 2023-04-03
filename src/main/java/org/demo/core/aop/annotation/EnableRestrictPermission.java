@@ -1,6 +1,6 @@
 package org.demo.core.aop.annotation;
 
-import org.demo.core.entity.enums.Role;
+import org.demo.core.pojo.enums.Role;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

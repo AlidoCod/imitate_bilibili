@@ -1,14 +1,23 @@
 package org.demo.core.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.demo.core.controller.vo.InterestVo;
-import org.demo.core.util.JsonBean;
+import org.demo.core.controller.vo.JsonBean;
+import org.springframework.stereotype.Service;
 
-public interface FanService {
+@Service
+@Slf4j
+public class FanService {
+    public JsonBean<Page<InterestVo>> getInterestList(Integer pageNum, Integer pageSize) {
+        return null;
+    }
 
-    JsonBean<Void> interest(Long id);
+    public JsonBean<Void> notInterest(Long id) {
+        return null;
+    }
 
-    JsonBean<Void> notInterest(Long id);
-
-    JsonBean<Page<InterestVo>> getInterestList(Integer pageNum, Integer pageSize);
+    public JsonBean<Void> interest(Long id) {
+        return null;
+    }
 }

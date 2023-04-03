@@ -2,7 +2,7 @@ package org.demo.core;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.demo.core.dao.UserMapper;
-import org.demo.core.entity.User;
+import org.demo.core.pojo.User;
 import org.demo.core.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

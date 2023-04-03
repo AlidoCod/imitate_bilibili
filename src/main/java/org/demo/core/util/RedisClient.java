@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -21,6 +22,7 @@ import java.util.function.Function;
  * 自定义缓存组件，抛弃Spring-Cache, 自定义就可以不用学框架啦
  */
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class RedisClient {
 
@@ -28,18 +30,12 @@ public class RedisClient {
 
     private final ObjectMapper objectMapper;
 
-    private final ThreadPoolExecutor threadPoolExecutor;
+    private final ThreadPoolTaskExecutor threadPoolExecutor;
 
     private static final long CACHE_NULL_TTL = 10;
 
     private static final String LOCK_KEY_PREFIX = "LOCK:";
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RedisClient(StringRedisTemplate stringRedisTemplate, ObjectMapper objectMapper, ThreadPoolExecutor threadPoolExecutor) {
-        this.stringRedisTemplate = stringRedisTemplate;
-        this.objectMapper = objectMapper;
-        this.threadPoolExecutor = threadPoolExecutor;
-    }
 
     /**
      * 设置永久Key-Value

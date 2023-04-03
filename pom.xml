@@ -50,6 +50,13 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--localDateTime-json-parse-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.14.2</version>
+        </dependency>
+
         <!--aop-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

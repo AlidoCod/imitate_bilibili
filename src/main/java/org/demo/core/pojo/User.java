@@ -1,12 +1,12 @@
-package org.demo.core.entity;
+package org.demo.core.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.demo.core.entity.base.BaseEntity;
-import org.demo.core.entity.enums.Role;
-import org.demo.core.entity.enums.Tag;
+import org.demo.core.pojo.base.BaseEntity;
+import org.demo.core.pojo.enums.Role;
+import org.demo.core.pojo.enums.Tag;
 import org.demo.core.handler.ListTagTypeHandler;
 
 import java.util.List;
