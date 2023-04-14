@@ -109,9 +109,11 @@ public class UserService {
      */
     @Transactional
     public JsonBean<Void> coverUpdate(MultipartFile file, MultipartFileParamDto dto) throws IOException {
+        // 移除测试md5字符串出现的换行符
+        String md5 = dto.getMd5().substring(0, 32);
         // 避免用户重复更新相同头像
         Image image = imageMapper.selectById(ThreadHolder.getUser().getImageId());
-        if (image != null && image.getMd5().equals(dto.getMd5()))
+        if (image != null && image.getMd5().equals(md5))
             return JsonBean.success();
 
         String username = ThreadHolder.getUsername();
@@ -132,7 +134,7 @@ public class UserService {
         file.transferTo(tempFile);
         FileSystemResource resource = new FileSystemResource(tempFile);
         form.add("image", resource);
-        form.add("md5", dto.getMd5());
+        form.add("md5", md5);
         form.add("suffix", dto.getSuffix());
 
         HttpEntity<MultiValueMap<String, Object>> files = new HttpEntity<>(form, httpHeaders);

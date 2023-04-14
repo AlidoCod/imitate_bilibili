@@ -74,6 +74,13 @@ spring:
       time-to-live: 3600000
       use-key-prefix: true
       cache-null-values: true
+  rabbitmq:
+    username: admin
+    password: 12345678
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /
+    publisher-returns: true
 
 mybatis-plus:
   mapper-locations: classpath:mappers/*Mapper.xml
