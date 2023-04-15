@@ -1,0 +1,73 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: 123456
+      database: 0
+      jedis:
+        pool:
+          enabled: true
+          min-idle: 1
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      use-key-prefix: true
+      cache-null-values: true
+
+  rabbitmq:
+    username: admin
+    password: 12345678
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /
+    publisher-returns: true
+    listener:
+      simple:
+        # 手动签收
+        acknowledge-mode: manual
+        # 每次拉取的消息数
+        # 限流，如果严格控制消费顺序，这里应该填1，数值越大，消费处理速度越快。MQ会把这个数值的消息放到缓存当中。
+        # 因此数值越大，内存占用越大，还需要考虑消费的速度
+        prefetch: 10
+        # 并发数
+        concurrency: 5
+        # 最大并发数
+        max-concurrency: 10
+
+mybatis-plus:
+  mapper-locations: classpath:mappers/*Mapper.xml
+  # 开启枚举映射
+  # 实体类扫描，需要指定包类名
+  type-aliases-package: org.demo.core.pojo
+  # 开启驼峰映射
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      logic-delete-field: status
+  type-handlers-package: org.demo.core.handler
+
+logging:
+  charset:
+    file: UTF-8
+  file:
+    name: ./netty-server/log/websocket.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+      clean-history-on-start: true
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss.SSS
+  level:
+    org.demo: debug
+

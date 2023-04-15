@@ -1,0 +1,159 @@
+server:
+  port: 80
+  socket: http://localhost:80
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mvc:
+    async:
+      request-timeout: 20
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+  web:
+    resources:
+      chain:
+        compressed: true
+
+  jackson:
+    # 全局设置@JsonFormat的格式pattern
+    date-format: yyyy-MM-dd HH:mm:ss
+    # 当地时区
+    locale: zh
+    # 设置全局时区
+    time-zone: GMT+8
+    # 常用，全局设置pojo或被@JsonInclude注解的属性的序列化方式
+    default-property-inclusion: NON_NULL #不为空的属性才会序列化,具体属性可看JsonInclude.Include
+    # 常规默认,枚举类SerializationFeature中的枚举属性为key，值为boolean设置jackson序列化特性,具体key请看SerializationFeature源码
+    serialization:
+      # WRITE_DATES_AS_TIMESTAMPS: true # 返回的java.util.date转换成timestamp
+      FAIL_ON_EMPTY_BEANS: true # 对象为空时是否报错，默认true
+    # 枚举类DeserializationFeature中的枚举属性为key，值为boolean设置jackson反序列化特性,具体key请看DeserializationFeature源码
+    deserialization:
+      # 常用,json中含pojo不存在属性时是否失败报错,默认true
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+    # 枚举类MapperFeature中的枚举属性为key，值为boolean设置jackson ObjectMapper特性
+    # ObjectMapper在jackson中负责json的读写、json与pojo的互转、json tree的互转,具体特性请看MapperFeature,常规默认即可
+    mapper:
+      # 使用getter取代setter探测属性，如类中含getName()但不包含name属性与setName()，传输的vo json格式模板中依旧含name属性
+      USE_GETTERS_AS_SETTERS: true #默认false
+    # 枚举类JsonParser.Feature枚举类中的枚举属性为key，值为boolean设置jackson JsonParser特性
+    # JsonParser在jackson中负责json内容的读取,具体特性请看JsonParser.Feature，一般无需设置默认即可
+    parser:
+      ALLOW_SINGLE_QUOTES: true # 是否允许出现单引号,默认false
+    # 枚举类JsonGenerator.Feature枚举类中的枚举属性为key，值为boolean设置jackson JsonGenerator特性，一般无需设置默认即可
+    # JsonGenerator在jackson中负责编写json内容,具体特性请看JsonGenerator.Feature
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: 123456
+      database: 0
+      lettuce:
+        pool:
+          max-active: 32
+          max-wait: 10
+          # 最大空闲连接数
+          max-idle: 16
+          min-idle: 8
+      timeout: 1000
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      use-key-prefix: true
+      cache-null-values: true
+  rabbitmq:
+    username: admin
+    password: 12345678
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /
+    publisher-returns: true
+    listener:
+      simple:
+        # 手动签收
+        acknowledge-mode: manual
+        # 每次拉取的消息数
+        # 限流，如果严格控制消费顺序，这里应该填1，数值越大，消费处理速度越快。MQ会把这个数值的消息放到缓存当中。
+        # 因此数值越大，内存占用越大，还需要考虑消费的速度
+        prefetch: 10
+        # 并发数
+        concurrency: 5
+        # 最大并发数
+        max-concurrency: 10
+
+mybatis-plus:
+  mapper-locations: classpath:mappers/*Mapper.xml
+  # 开启枚举映射
+  # 实体类扫描，需要指定包类名
+  type-aliases-package: org.demo.core.pojo
+  # 开启驼峰映射
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      logic-delete-field: status
+  type-handlers-package: org.demo.core.handler
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    enabled: true
+    path: /swagger
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: org.demo.controller
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+logging:
+  charset:
+    file: UTF-8
+  file:
+    name: ./main-server/log/main-server.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+      clean-history-on-start: true
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss.SSS
+  level:
+    org.demo: debug
+
+jwt:
+  private-key: 1314
+
+thread:
+  prefix: demo-thread-pool
+  # 队列容量
+  capacity: 100
+
+minio:
+  socket: http://localhost:9000
+  username: admin
+  password: 12345678
+  bucket:
+    - common
+    - video
