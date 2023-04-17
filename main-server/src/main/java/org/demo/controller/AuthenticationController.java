@@ -10,11 +10,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.demo.aop.annotation.EnableAutoLog;
-import org.demo.controller.dto.LoginDto;
-import org.demo.controller.dto.RegisterDto;
+import org.demo.dto.LoginDto;
+import org.demo.dto.RegisterDto;
 import org.demo.service.AuthenticationService;
 import org.demo.service.SimpleApiService;
-import org.demo.controller.vo.JsonBean;
+import org.demo.vo.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,9 +40,9 @@ public class AuthenticationController {
     @EnableAutoLog
     @ResponseBody
     @GetMapping(value = "/verify-code")
-    public JsonBean<Void> verifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Result<Void> verifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         simpleApiService.generateVerifyCode(request, response);
-        return JsonBean.success();
+        return Result.success();
     }
 
     @Operation(summary = "登录接口", description = "根据用户名、密码和验证码进行用户的登录，前面没有验证码切记不能请求，否则报错")
@@ -52,8 +52,8 @@ public class AuthenticationController {
     @EnableAutoLog
     @ResponseBody
     @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
-    public JsonBean<String> login(@RequestBody LoginDto loginDTO, HttpServletRequest request) throws Exception {
-        return JsonBean.successByData(authenticationService.authenticate(loginDTO, request));
+    public Result<String> login(@RequestBody LoginDto loginDTO, HttpServletRequest request) throws Exception {
+        return Result.successByData(authenticationService.authenticate(loginDTO, request));
     }
 
     @Operation(summary = "注册接口", description = "手机号、密码、验证码和注册码，注册码为123456（贫穷没话费）")
@@ -61,8 +61,8 @@ public class AuthenticationController {
     @EnableAutoLog
     @ResponseBody
     @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
-    public JsonBean<String> register(@RequestBody RegisterDto registerDto, HttpServletRequest request) throws Exception {
-        return JsonBean.successByData(authenticationService.register(registerDto, request));
+    public Result<String> register(@RequestBody RegisterDto registerDto, HttpServletRequest request) throws Exception {
+        return Result.successByData(authenticationService.register(registerDto, request));
     }
 
     /**

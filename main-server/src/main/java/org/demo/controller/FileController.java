@@ -3,14 +3,16 @@ package org.demo.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.demo.aop.annotation.EnableAutoLog;
-import org.demo.controller.dto.file.MultipartFileParamDto;
-import org.demo.controller.dto.file.VideoMergeParamDto;
+import org.demo.dto.file.MultipartFileParamDto;
+import org.demo.dto.file.VideoMergeParamDto;
 import org.demo.service.FileService;
-import org.demo.controller.vo.JsonBean;
+import org.demo.vo.Result;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +36,7 @@ public class FileController {
     @ApiResponse(responseCode = "200", description = "成功时，返回imageId")
     @EnableAutoLog
     @GetMapping("/image/check")
-    public JsonBean<Void> checkImage(@RequestParam("md5") String md5) {
+    public Result<Void> checkImage(@RequestParam("md5") String md5) {
         return fileService.checkImage(md5);
     }
 
@@ -42,7 +44,7 @@ public class FileController {
     @ApiResponse(responseCode = "200", description = "若成功，则视频已存在，请勿重复上传（不想写API了）")
     @EnableAutoLog
     @GetMapping("/video/check")
-    public JsonBean<Void> checkVideo(@RequestParam("md5") String md5) {
+    public Result<Void> checkVideo(@RequestParam("md5") String md5) {
         return fileService.checkVideo(md5);
     }
 
@@ -50,37 +52,44 @@ public class FileController {
     @ApiResponse(responseCode = "200", description = "成功时，返回分块下标")
     @EnableAutoLog
     @GetMapping("/video/chunk/check")
-    public JsonBean<Void> checkVideoChunk(@RequestParam("md5") String md5, @RequestParam("index") int index) {
+    public Result<Void> checkVideoChunk(@RequestParam("md5") String md5, @RequestParam("index") int index) {
         return fileService.checkVideoChunk(md5, index);
     }
 
     @Operation(summary = "视频分块上传", description = "校验通过的分块不必重新上传，节省带宽，必须校验所有分块，后端无法确认分块状态")
-    @ApiResponse(responseCode = "200", description = "")
+    @ApiResponse(responseCode = "200")
     @EnableAutoLog
     @PostMapping(value = "/video/chunk/upload", consumes = "multipart/form-data")
-    public JsonBean<Void> uploadVideoChunk(@RequestPart("chunk") MultipartFile chunk, @RequestParam("md5") String md5, @RequestParam("index") int index) {
+    public Result<Void> uploadVideoChunk(@RequestPart("chunk") MultipartFile chunk, @RequestParam("md5") String md5, @RequestParam("index") int index) {
         return fileService.uploadVideoChunk(chunk, md5, index);
     }
 
     @Operation(summary = "视频分块合并", description = "请确保所有分块上传成功，上传失败的分块一定要重传")
-    @ApiResponse(responseCode = "200", description = "")
+    @ApiResponse(responseCode = "200")
     @EnableAutoLog
     @PostMapping(value = "/video/chunk/merge")
-    public JsonBean<Void> mergeVideoChunk(@RequestPart("chunk") MultipartFile chunk, VideoMergeParamDto dto) {
-        return fileService.mergeVideoChunk(chunk, dto);
+    public Result<Void> mergeVideoChunk(@RequestBody VideoMergeParamDto dto) {
+        return fileService.mergeVideoChunk(dto);
     }
 
-    @Operation(summary = "图片/封面上传", description = "")
+    @Operation(summary = "断点下载，利用Http Range")
+    @EnableAutoLog
+    @GetMapping(value = "/video/play/{videoId}")
+    public void play(@PathVariable("videoId") @NotNull Long videoId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+        fileService.play(videoId, httpServletRequest, httpServletResponse);
+    }
+
+    @Operation(summary = "图片/封面上传")
     @EnableAutoLog
     @PostMapping(value = "/image/upload", consumes = "multipart/form-data")
-    public JsonBean<String> uploadImage(@RequestPart("image") MultipartFile file, MultipartFileParamDto dto) throws IOException {
+    public Result<String> uploadImage(@RequestPart("image") MultipartFile file, MultipartFileParamDto dto) throws IOException {
         return fileService.uploadImage(file, dto);
     }
 
     @Operation(summary = "图片下载", description = "...")
     @EnableAutoLog
     @GetMapping(value = "/image/download/{imageId}")
-    public JsonBean<Void> downloadImage(@PathVariable("imageId") Long imageId, HttpServletResponse response) {
+    public Result<Void> downloadImage(@PathVariable("imageId") Long imageId, HttpServletResponse response) {
         return fileService.downloadImage(imageId, response);
     }
 

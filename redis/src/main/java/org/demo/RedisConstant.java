@@ -11,4 +11,8 @@ public class RedisConstant {
     public static final String CACHE_VIDEO_ID = "CACHE:VIDEO:ID:";
 
     public static final String BARRAGE_LOCK_ID = "BARRAGE:LOCK:ID:";
+
+    public static final String PERSIST_FOLLOW_ID = "PERSIST:FOLLOW:ID:";
+
+    public static final String PERSIST_FAN_ID = "PERSIST:FAN:ID:";
 }

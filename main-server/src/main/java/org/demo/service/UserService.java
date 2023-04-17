@@ -6,20 +6,20 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.demo.constant.EntityConstant;
+import org.demo.RedisClient;
 import org.demo.RedisConstant;
-import org.demo.controller.dto.file.MultipartFileParamDto;
-import org.demo.controller.dto.user.UserUpdateDto;
-import org.demo.controller.vo.JsonBean;
-import org.demo.controller.vo.UserVo;
-import org.demo.core.dao.ImageMapper;
-import org.demo.core.dao.UserMapper;
-import org.demo.exception.GlobalRuntimeException;
-import org.demo.core.pojo.Image;
-import org.demo.core.pojo.User;
+import org.demo.constant.EntityConstant;
+import org.demo.dto.file.MultipartFileParamDto;
+import org.demo.dto.user.UserUpdateDto;
+import org.demo.mapper.ImageMapper;
+import org.demo.mapper.UserMapper;
+import org.demo.pojo.GlobalRuntimeException;
+import org.demo.pojo.Image;
+import org.demo.pojo.User;
+import org.demo.vo.Result;
+import org.demo.vo.UserInformationVo;
 import org.demo.util.JwtProvider;
 import org.demo.util.ObjectConverter;
-import org.demo.RedisClient;
 import org.demo.util.ThreadHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -71,10 +71,10 @@ public class UserService {
      * @return
      */
 
-    public JsonBean<UserVo> query() throws Exception{
+    public Result<UserInformationVo> query() throws Exception{
         User user = ThreadHolder.getUser();
-        UserVo userVo = ObjectConverter.convert(user, UserVo.class);
-        return JsonBean.successByData(userVo);
+        UserInformationVo userVo = ObjectConverter.convert(user, UserInformationVo.class);
+        return Result.successByData(userVo);
     }
 
     public void delete() throws Exception {
@@ -108,13 +108,13 @@ public class UserService {
      * 更新完后也不能删除图片，避免其他表找不到图片，因为上传底层实现了秒传。
      */
     @Transactional
-    public JsonBean<Void> coverUpdate(MultipartFile file, MultipartFileParamDto dto) throws IOException {
+    public Result<Void> coverUpdate(MultipartFile file, MultipartFileParamDto dto) throws IOException {
         // 移除测试md5字符串出现的换行符
         String md5 = dto.getMd5().substring(0, 32);
         // 避免用户重复更新相同头像
         Image image = imageMapper.selectById(ThreadHolder.getUser().getImageId());
         if (image != null && image.getMd5().equals(md5))
-            return JsonBean.success();
+            return Result.success();
 
         String username = ThreadHolder.getUsername();
 
@@ -151,7 +151,7 @@ public class UserService {
          * 为什么需要自己注入自己再调用事务方法？因为this自调用的this指针没有被动态代理，是没有事务特性的！
         */
         userService.extracted(username, url, tempFile, files, user);
-        return JsonBean.success();
+        return Result.success();
     }
 
     @Async
@@ -159,7 +159,7 @@ public class UserService {
     public void extracted(String username, String url, File tempFile, HttpEntity<MultiValueMap<String, Object>> files, User user) {
         try {
             log.debug(Thread.currentThread().toString());
-            JsonBean jsonBean = restTemplate.postForObject(url, files, JsonBean.class);
+            Result jsonBean = restTemplate.postForObject(url, files, Result.class);
             // 准备插入imageId
             user.setImageId(Long.valueOf((String) jsonBean.getData()));
             userMapper.updateById(user);
@@ -170,15 +170,15 @@ public class UserService {
         }
     }
 
-    public JsonBean<Void> downloadCover(HttpServletResponse response) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public Result<Void> downloadCover(HttpServletResponse response) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         Long imageId = ThreadHolder.getUser().getImageId();
         Image image = imageMapper.selectById(imageId);
         if (image == null)
-            return JsonBean.fail("未设置头像");
+            return Result.fail("未设置头像");
         ServletOutputStream outputStream = response.getOutputStream();
         minioService.download(EntityConstant.IMAGE_BUCKET, image.getImagePath(), outputStream);
         outputStream.flush();
-        return JsonBean.success(image.getMd5());
+        return Result.success(image.getMd5());
     }
 
 }

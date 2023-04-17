@@ -10,7 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.demo.aop.annotation.EnableAutoLog;
-import org.demo.core.pojo.User;
+import org.demo.pojo.User;
 import org.demo.util.IPUtil;
 import org.demo.util.ThreadHolder;
 import org.springframework.core.annotation.Order;

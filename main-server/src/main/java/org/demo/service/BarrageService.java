@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.demo.RabbitMQConstant;
 import org.demo.RedisClient;
 import org.demo.RedisConstant;
-import org.demo.controller.vo.JsonBean;
-import org.demo.core.pojo.Barrage;
+import org.demo.pojo.Barrage;
+import org.demo.vo.Result;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -15,7 +15,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -33,7 +32,7 @@ public class BarrageService {
     /*
      * 前缀采用userId和timestamp确保一秒内用户只能发一条弹幕
      * */
-    public JsonBean<Void> sent(Long userId, Long videoId, String message, String videoTime) throws JsonProcessingException {
+    public Result<Void> sent(Long userId, Long videoId, String message, String videoTime) throws JsonProcessingException {
         Long id = stringRedisTemplate.opsForValue().increment(RedisConstant.BARRAGE_LOCK_ID);
         /*
          * 避免高并发越界，当Long到达最大值的一半时，就直接重置，无论并发数多大，都不可能瞬间突破到Long值
@@ -51,7 +50,6 @@ public class BarrageService {
         barrage.setUserId(userId);
         barrage.setVideoId(videoId);
         barrage.setContent(message);
-        barrage.setVideoTime(videoTime);
         rabbitTemplate.convertAndSend(RabbitMQConstant.DEMO_EXCHANGE, RabbitMQConstant.BARRAGE_ROUTING_KEY, objectMapper.writeValueAsString(barrage), new MessagePostProcessor() {
             @Override
             public Message postProcessMessage(Message message) throws AmqpException {
@@ -61,7 +59,7 @@ public class BarrageService {
         });
         //有1s内发出多个消息的可能，但是由于消费完后，会对删除key，所以1s就算收到重复的或者大量的消息，也不会进行重复的消费。
         return redisClient.setIfAbsent(RedisConstant.BARRAGE_LOCK_ID, String.valueOf(id), "", 30L, TimeUnit.MINUTES) ?
-                JsonBean.success() : JsonBean.fail("服务器内部弹幕ID重复, 稍等片刻即可");
+                Result.success() : Result.fail("服务器内部弹幕ID重复, 稍等片刻即可");
     }
 
 }

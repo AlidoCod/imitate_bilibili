@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-@MapperScan(basePackages = "org.demo.core.dao")
+@MapperScan(basePackages = "org.demo.mapper")
 public class WebSocketApplication {
 
     @Bean

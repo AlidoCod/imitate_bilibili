@@ -5,8 +5,8 @@ import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.demo.RabbitMQConstant;
-import org.demo.core.pojo.Barrage;
-import org.demo.service.BarrageService;
+import org.demo.pojo.Barrage;
+import org.demo.service.ConsumeBarrageService;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class BarrageConsumerListener {
 
     private final ObjectMapper objectMapper;
 
-    private final BarrageService barrageService;
+    private final ConsumeBarrageService barrageService;
 
     @RabbitListener(queues = {RabbitMQConstant.BARRAGE_QUEUE})
     public void consumeMessage(Message message, Channel channel) throws IOException {

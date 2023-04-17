@@ -43,10 +43,10 @@ spring:
         max-concurrency: 10
 
 mybatis-plus:
-  mapper-locations: classpath:mappers/*Mapper.xml
+  mapper-locations: classpath*:mappers/*Mapper.xml
   # 开启枚举映射
   # 实体类扫描，需要指定包类名
-  type-aliases-package: org.demo.core.pojo
+  type-aliases-package: org.demo.pojo
   # 开启驼峰映射
   configuration:
     map-underscore-to-camel-case: true
@@ -55,7 +55,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       logic-delete-field: status
-  type-handlers-package: org.demo.core.handler
+  type-handlers-package: org.demo.handler
 
 logging:
   charset:

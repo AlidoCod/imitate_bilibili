@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.demo.aop.annotation.EnableAutoLog;
-import org.demo.controller.dto.BarrageMessageDto;
-import org.demo.controller.vo.JsonBean;
+import org.demo.dto.BarrageMessageDto;
+import org.demo.vo.Result;
 import org.demo.service.BarrageService;
 import org.demo.util.ThreadHolder;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +30,7 @@ public class BarrageController {
     @EnableAutoLog
     @ResponseBody
     @PostMapping(value = "/sent")
-    public JsonBean<Void> sent(@RequestBody BarrageMessageDto messageDto) throws IOException {
+    public Result<Void> sent(@RequestBody BarrageMessageDto messageDto) throws IOException {
         return barrageService.sent(ThreadHolder.getUser().getId(), messageDto.getVideoId(), messageDto.getMessage(), messageDto.getVideoTime());
     }
 }

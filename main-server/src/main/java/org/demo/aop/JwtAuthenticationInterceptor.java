@@ -7,12 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.demo.RedisClient;
 import org.demo.RedisConstant;
-import org.demo.controller.vo.JsonBean;
-import org.demo.core.dao.UserMapper;
-import org.demo.filter.xss.XssHttpServletRequestWrapper;
-import org.demo.core.pojo.User;
-import org.demo.core.pojo.enums.ResponseEnum;
-import org.demo.util.*;
+import org.demo.mapper.UserMapper;
+import org.demo.pojo.User;
+import org.demo.pojo.base.ResponseEnum;
+import org.demo.vo.Result;
+import org.demo.util.JwtProvider;
+import org.demo.util.ResponseHelper;
+import org.demo.util.ThreadHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -45,13 +46,13 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = XssHttpServletRequestWrapper.getOrgRequest(request).getHeader("token");
+        String token = request.getHeader("token");
         // 如果当前线程中存在threadHolder那么无需token直接放行
         if (ThreadHolder.getUser() != null)
             return true;
         // 没有token，还请求，返回没有权限
         if (token == null) {
-            responseHelper.writeObject(response, JsonBean.responseEnum(ResponseEnum.HTTP_STATUS_401));
+            responseHelper.writeObject(response, Result.responseEnum(ResponseEnum.HTTP_STATUS_401));
             return false;
         }
         String username = jwtProvider.parse(token);
