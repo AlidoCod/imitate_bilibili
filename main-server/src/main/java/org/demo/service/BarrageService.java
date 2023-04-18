@@ -8,9 +8,6 @@ import org.demo.RedisClient;
 import org.demo.RedisConstant;
 import org.demo.pojo.Barrage;
 import org.demo.vo.Result;
-import org.springframework.amqp.AmqpException;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -50,12 +47,9 @@ public class BarrageService {
         barrage.setUserId(userId);
         barrage.setVideoId(videoId);
         barrage.setContent(message);
-        rabbitTemplate.convertAndSend(RabbitMQConstant.DEMO_EXCHANGE, RabbitMQConstant.BARRAGE_ROUTING_KEY, objectMapper.writeValueAsString(barrage), new MessagePostProcessor() {
-            @Override
-            public Message postProcessMessage(Message message) throws AmqpException {
-                message.getMessageProperties().setHeader("msg-id", id);
-                return message;
-            }
+        rabbitTemplate.convertAndSend(RabbitMQConstant.DEMO_EXCHANGE, RabbitMQConstant.BARRAGE_ROUTING_KEY, objectMapper.writeValueAsString(barrage), message1 -> {
+            message1.getMessageProperties().setHeader("msg-id", id);
+            return message1;
         });
         //有1s内发出多个消息的可能，但是由于消费完后，会对删除key，所以1s就算收到重复的或者大量的消息，也不会进行重复的消费。
         return redisClient.setIfAbsent(RedisConstant.BARRAGE_LOCK_ID, String.valueOf(id), "", 30L, TimeUnit.MINUTES) ?

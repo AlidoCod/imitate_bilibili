@@ -6,13 +6,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.demo.RedisConstant;
-import org.demo.helper.RedisHelper;
-import org.demo.mapper.FanMapper;
+import org.demo.helper.RedisHSetHelper;
+import org.demo.mapper.RelationMapper;
 import org.demo.mapper.UserMapper;
-import org.demo.pojo.Fan;
+import org.demo.pojo.Relation;
 import org.demo.pojo.User;
-import org.demo.vo.UserVo;
 import org.demo.util.ObjectConverter;
+import org.demo.vo.Result;
+import org.demo.vo.UserVo;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,39 +27,39 @@ import java.util.*;
 @RequiredArgsConstructor
 public class FollowService {
 
-    private final RedisHelper redisHelper;
+    private final RedisHSetHelper redisHSetHelper;
 
-    private final FanMapper fanMapper;
+    private final RelationMapper relationMapper;
 
     private final UserMapper userMapper;
 
     public Boolean isFollowed(Long userId, Long followId) {
         String key = RedisConstant.PERSIST_FOLLOW_ID + userId;
-        return redisHelper.isMember(key, String.valueOf(followId));
+        return redisHSetHelper.isMember(key, String.valueOf(followId));
     }
 
     public void follow(Long userId, Long followId) {
-        Boolean flag = redisHelper.addMember(RedisConstant.PERSIST_FOLLOW_ID + userId, String.valueOf(followId));
+        Boolean flag = redisHSetHelper.addMember(RedisConstant.PERSIST_FOLLOW_ID + userId, String.valueOf(followId));
         //user关注了follow
-        redisHelper.addMember(RedisConstant.PERSIST_FAN_ID + followId, String.valueOf(userId));
+        redisHSetHelper.addMember(RedisConstant.PERSIST_FAN_ID + followId, String.valueOf(userId));
         //user是follow的粉丝
         // 因为是set所以不去判断原本是否有没关注也没关系
         if (flag) {
-            Fan fan = new Fan();
-            fan.setUserId(userId);
-            fan.setFollowId(followId);
-            fanMapper.insert(fan);
+            Relation relation = new Relation();
+            relation.setUserId(userId);
+            relation.setFollowId(followId);
+            relationMapper.insert(relation);
         }
         // 如果已经存在，则不插入数据库
     }
 
     public void unfollow(Long userId, Long followId) {
-        Boolean flag = redisHelper.removeMember(RedisConstant.PERSIST_FOLLOW_ID + userId, String.valueOf(followId));
+        Boolean flag = redisHSetHelper.removeMember(RedisConstant.PERSIST_FOLLOW_ID + userId, String.valueOf(followId));
         // 减少关注
-        redisHelper.removeMember(RedisConstant.PERSIST_FAN_ID + followId, String.valueOf(userId));
+        redisHSetHelper.removeMember(RedisConstant.PERSIST_FAN_ID + followId, String.valueOf(userId));
         // 减少粉丝
         if (flag) {
-            fanMapper.deleteByMap(Map.of("user_id", userId, "follow_id", followId));
+            relationMapper.deleteByMap(Map.of("user_id", userId, "follow_id", followId));
         }
     }
 
@@ -66,7 +67,7 @@ public class FollowService {
      *  获取我关注的人
      */
     public Page<UserVo> getFollowers(Page<UserVo> page, Long userId) {
-        Set<String> members = redisHelper.getMembers(RedisConstant.PERSIST_FOLLOW_ID + userId);
+        Set<String> members = redisHSetHelper.getMembers(RedisConstant.PERSIST_FOLLOW_ID + userId);
         return members.isEmpty() ? page : userMapper.selectUserVoPage(page, members);
     }
 
@@ -74,7 +75,7 @@ public class FollowService {
      *  获取我的粉丝
      */
     public Page<UserVo> getFans(Page<UserVo> page, Long userId) {
-        Set<String> members = redisHelper.getMembers(RedisConstant.PERSIST_FAN_ID + userId);
+        Set<String> members = redisHSetHelper.getMembers(RedisConstant.PERSIST_FAN_ID + userId);
         return members.isEmpty() ? page : userMapper.selectUserVoPage(page, members);
     }
 
@@ -82,7 +83,7 @@ public class FollowService {
      *  获取共同的关注
      */
     public Page<UserVo> getCollectiveFollower(Page<UserVo> page, Long userIdA, Long userIdB) {
-        Set<String> members = redisHelper.getCollectiveMembers(RedisConstant.PERSIST_FOLLOW_ID + userIdA, RedisConstant.PERSIST_FOLLOW_ID + userIdB);
+        Set<String> members = redisHSetHelper.getCollectiveMembers(RedisConstant.PERSIST_FOLLOW_ID + userIdA, RedisConstant.PERSIST_FOLLOW_ID + userIdB);
         return members.isEmpty() ? page : userMapper.selectUserVoPage(page, members);
     }
 
@@ -94,11 +95,11 @@ public class FollowService {
      * @param userId 自己的ID
      */
     public List<UserVo> getInterestingFollower(Long userId, int num) throws JsonProcessingException {
-        Set<String> followers = redisHelper.getMembers(RedisConstant.PERSIST_FOLLOW_ID + userId);
+        Set<String> followers = redisHSetHelper.getMembers(RedisConstant.PERSIST_FOLLOW_ID + userId);
         Set<Object> concurrentHashSet = Sets.newConcurrentHashSet();
         // 确保没有重复元素
         followers.parallelStream().forEach(other -> {
-            Set<String> differentMembers = redisHelper.getDifferentMembers(RedisConstant.PERSIST_FOLLOW_ID + other, RedisConstant.PERSIST_FOLLOW_ID + userId);
+            Set<String> differentMembers = redisHSetHelper.getDifferentMembers(RedisConstant.PERSIST_FOLLOW_ID + other, RedisConstant.PERSIST_FOLLOW_ID + userId);
             concurrentHashSet.addAll(differentMembers);
         });
         List<Object> list = concurrentHashSet.stream().toList();
@@ -117,6 +118,14 @@ public class FollowService {
             // 删除已经入选的元素
         }
         return result;
+    }
+
+    public Result<Long> getFollowersNums(Long userId) {
+        return Result.successByData(redisHSetHelper.getSize(RedisConstant.PERSIST_FOLLOW_ID + userId));
+    }
+
+    public Result<Long> getFansNums(Long userId) {
+        return Result.successByData(redisHSetHelper.getSize(RedisConstant.PERSIST_FAN_ID + userId));
     }
 
 }

@@ -16,6 +16,10 @@
         <module>rabbitmq</module>
         <module>follow-service</module>
         <module>common</module>
+        <module>minio-service</module>
+        <module>image-service</module>
+        <module>video-service</module>
+        <module>series-service</module>
     </modules>
 
     <properties>
@@ -82,4 +86,19 @@
 
     </dependencies>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.10.1</version>
+                    <configuration>
+                        <compilerArgs>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

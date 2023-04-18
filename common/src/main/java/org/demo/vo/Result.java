@@ -3,6 +3,7 @@ package org.demo.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.demo.constant.EntityConstant;
 import org.demo.pojo.GlobalRuntimeException;
 import org.demo.pojo.base.ResponseEnum;
 
@@ -44,7 +45,7 @@ public class Result<T> {
      * @return  (200, msg)
      */
     public static Result<Void> success() {
-        return new Result<>(ResponseEnum.SUCCESS);
+        return of(200, "success");
     }
 
     /**
@@ -52,14 +53,6 @@ public class Result<T> {
      */
     public static <T> Result<T> successByData(T data) {
         return new Result<>(200, data);
-    }
-
-    /**
-     * 常用的fail方法封装
-     * @return (500, msg)
-     */
-    public static Result<Void> fail() {
-        return new Result<>(ResponseEnum.FAIL);
     }
 
     /**
@@ -84,15 +77,31 @@ public class Result<T> {
      * 全局异常捕获到Exception
      */
     public static Result<Void> error() {
-        return new Result<>(500, "服务器内部错误，请联系管理员");
+        return new Result<>(500, "服务器内部未知错误，请联系管理员");
+    }
+
+    public static Result<Void> fail() {
+        return of(200, "fail");
     }
 
     public static Result<Void> fail(String message) {
-        return of(400, message);
+        return of(200, message);
     }
 
     public static Result<Void> success(String message) {
         return of(200, message);
+    }
+
+    public static Result<Void> yes () {
+        return of(200, EntityConstant.YES);
+    }
+
+    public static Result<Void> no () {
+        return of(200, EntityConstant.NO);
+    }
+
+    public static Result<Void> ok() {
+        return of(200, "ok");
     }
     /**
      * 全局异常捕获到GlobalRuntimeException

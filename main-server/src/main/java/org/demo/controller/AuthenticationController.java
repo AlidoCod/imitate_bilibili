@@ -26,7 +26,7 @@ import java.io.IOException;
 
 @Slf4j
 @Validated
-@Tag(name = "认证接口")
+@Tag(name = "基本/认证接口")
 @Controller
 @RequiredArgsConstructor
 public class AuthenticationController {
@@ -72,5 +72,13 @@ public class AuthenticationController {
     @GetMapping(value = "/doc")
     public String doc() {
         return "forward:/doc.html";
+    }
+
+    @Operation(summary = "获取标签[tags]类型接口")
+    @EnableAutoLog
+    @ResponseBody
+    @GetMapping(value = "/tags")
+    public Result<org.demo.pojo.base.Tag[]> tags() throws Exception {
+        return Result.successByData(org.demo.pojo.base.Tag.getValues());
     }
 }

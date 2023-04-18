@@ -1,6 +1,7 @@
 package org.demo.handler;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
@@ -36,7 +37,8 @@ public class ListTagTypeHandler extends BaseTypeHandler<List<Tag>> {
 
     @Override
     public List<Tag> getNullableResult(ResultSet resultSet, String s) throws SQLException {
-        return parseValue(s);
+        String result = resultSet.getString(s);
+        return parseValue(result);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class ListTagTypeHandler extends BaseTypeHandler<List<Tag>> {
     }
 
     private List<Tag> parseValue(String value) {
-        if (value == null || value.equals("tags"))
+        if (Strings.isNullOrEmpty(value))
             return new ArrayList<>();
         Iterable<String> values = Splitter.on(',').split(value);
         List<Tag> list = new ArrayList<>();

@@ -48,7 +48,7 @@ public class UserController {
         return Result.success();
     }
 
-    @Operation(summary = "用户头像异步上传", description = "...")
+    @Operation(summary = "用户头像上传", description = "...")
     @EnableAutoLog
     @PostMapping("/cover/update")
     public Result<Void> coverUpdate(@RequestPart("image") MultipartFile file, MultipartFileParamDto dto) throws Exception {

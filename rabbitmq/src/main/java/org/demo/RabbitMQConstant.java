@@ -8,6 +8,8 @@ public class RabbitMQConstant {
 
     public static final String BARRAGE_ROUTING_KEY = "barrage";
 
+    public static final String ASYNC_ROUTING_KEY = "async";
+
     public static Long MINUTE = null;
 
     private static final long NANO_SCALE   = 1L;

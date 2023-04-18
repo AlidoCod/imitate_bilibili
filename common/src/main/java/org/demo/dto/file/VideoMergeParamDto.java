@@ -5,9 +5,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.demo.pojo.base.Tag;
-
-import java.util.List;
 
 @Schema(description = "视频上传请求体")
 @Data
@@ -30,9 +27,6 @@ public class VideoMergeParamDto {
     String title;
     @Schema(description = "简介")
     String description = "";
-    @NotBlank
-    @Schema(description = "视频的标签，至少一个不能查无此屏")
-    List<Tag> tags;
     @NotBlank
     @Schema(description = "视频的后缀", example = ".mp4")
     String suffix;

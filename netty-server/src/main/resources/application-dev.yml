@@ -61,7 +61,7 @@ logging:
   charset:
     file: UTF-8
   file:
-    name: ./netty-server/log/websocket.log
+    name: netty-server/log/websocket.log
   logback:
     rollingpolicy:
       max-file-size: 5MB

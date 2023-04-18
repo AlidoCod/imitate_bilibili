@@ -25,8 +25,6 @@ public enum Tag {
 
     /**
      * 通过枚举值获得枚举类型
-     * @param value
-     * @return
      */
     public static Tag getTagByValue(int value) {
         for (final Tag tag : values()) {
@@ -35,4 +33,9 @@ public enum Tag {
         }
         return null;
     }
+
+    public static Tag[] getValues() {
+        return values();
+    }
+
 }

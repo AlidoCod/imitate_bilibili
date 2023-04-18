@@ -27,6 +27,11 @@ public class RabbitMQConfig {
         //队列统一过期
     }
 
+    @Bean(value = "asyncQueue")
+    public Queue asyncQueue() {
+        return QueueBuilder.durable().build();
+    }
+
     /**
      * 绑定关系配置
      */
@@ -34,6 +39,12 @@ public class RabbitMQConfig {
     public Binding queueBindExchange(@Qualifier("demoExchange") Exchange exchange, @Qualifier("barrageQueue") Queue queue) {
         return BindingBuilder.bind(queue).to(exchange).with(RabbitMQConstant.BARRAGE_ROUTING_KEY).noargs();
     }
+
+    @Bean
+    public Binding asyncQueueBindExchange(@Qualifier("demoExchange") Exchange exchange, @Qualifier("asyncQueue") Queue queue) {
+        return BindingBuilder.bind(queue).to(exchange).with(RabbitMQConstant.ASYNC_ROUTING_KEY).noargs();
+    }
+
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
