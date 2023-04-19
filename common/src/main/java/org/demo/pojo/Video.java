@@ -11,6 +11,7 @@ import org.demo.pojo.base.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 public class Video extends BaseEntity {
 
+    Long userId;
     Long seriesId;
     Long imageId;
     String md5;

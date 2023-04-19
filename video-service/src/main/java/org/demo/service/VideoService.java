@@ -91,6 +91,7 @@ public class VideoService {
         // 文件名字 = /xxx/ + md5 + ".xxx"
         String name = md5 + dto.getSuffix();
         video.setVideoPath(path + name);
+        video.setUserId(ThreadHolder.getUser().getId());
         video.setImageId(dto.getImageId());
         video.setVideoSuffix(dto.getSuffix());
         video.setMd5(dto.getMd5());

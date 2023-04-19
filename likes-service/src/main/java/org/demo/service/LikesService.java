@@ -1,17 +1,24 @@
 package org.demo.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.demo.RedisClient;
 import org.demo.RedisConstant;
 import org.demo.helper.RedisHSetHelper;
 import org.demo.mapper.LikesMapper;
+import org.demo.mapper.VideoMapper;
 import org.demo.pojo.Likes;
+import org.demo.pojo.Video;
 import org.demo.vo.Result;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +28,7 @@ public class LikesService {
     private final LikesMapper likesMapper;
     private final RedisHSetHelper redisHSetHelper;
     private final RedisClient redisClient;
+    private final VideoMapper videoMapper;
 
     private static final String CACHE_LIKES_ID = RedisConstant.CACHE_LIKES_ID;
     private static final String PERSIST_LIKES_ID_NUMS = RedisConstant.PERSIST_LIKES_ID_NUMS;
@@ -33,8 +41,8 @@ public class LikesService {
         // 缓存点赞信息
         redisHSetHelper.addMember(CACHE_LIKES_ID + videoId, String.valueOf(userId));
         // 视频点赞记录+1
-        redisClient.increase(PERSIST_LIKES_ID_NUMS + CACHE_LIKES_ID);
-        return Result.success();
+        redisClient.increase(PERSIST_LIKES_ID_NUMS + videoId);
+        return Result.ok();
     }
 
     /*
@@ -62,23 +70,57 @@ public class LikesService {
         });
     }
 
+    /*
+    * 如果redis存在数据，就删除redis的直接返回，否则就删除数据库的
+    * */
     public Result<Void> unlike(Long userId, Long videoId) {
-        return null;
+        boolean flag = false;
+        if (redisHSetHelper.removeMember(CACHE_LIKES_ID + videoId, String.valueOf(userId)))
+            flag = true;
+        if (!flag && likesMapper.deleteByMap(Map.of("user_id", userId, "video_id", videoId)) == 1)
+            flag = true;
+        if (flag)
+            redisClient.decrease(PERSIST_LIKES_ID_NUMS + videoId);
+        return Result.ok();
     }
 
+    /*
+    * 先查redis再查数据库
+    * */
     public Result<Void> isLike(Long userId, Long videoId) {
-        return null;
+        if (redisHSetHelper.isMember(CACHE_LIKES_ID + videoId, String.valueOf(userId))) {
+            return Result.yes();
+        }
+        if (!likesMapper.selectByMap(Map.of("user_id", userId, "video_id", videoId)).isEmpty()) {
+            return Result.yes();
+        }
+        return Result.no();
     }
 
-    public Result<Void> oneVideoLikesNums(Long videoId) {
-        return null;
+    public Result<Void> oneVideoLikesNums(Long videoId) throws JsonProcessingException {
+        return Result.success(redisClient.get(PERSIST_LIKES_ID_NUMS + videoId, String.class));
     }
 
     public Result<Void> userVideoLikesNums(Long userId) {
-        return null;
+        List<Video> list = videoMapper.selectByMap(Map.of("user_id", userId));
+        return countLikes(list);
     }
 
     public Result<Void> seriesVideoNums(Long seriesId) {
-        return null;
+        List<Video> list = videoMapper.selectByMap(Map.of("series_id", seriesId));
+        return countLikes(list);
+    }
+
+    @NotNull
+    private Result<Void> countLikes(List<Video> list) {
+        AtomicInteger count = new AtomicInteger();
+        list.parallelStream().forEach(video -> {
+            try {
+                count.addAndGet(redisClient.get(PERSIST_LIKES_ID_NUMS + video.getId(), Integer.class));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
+        return Result.success(count.toString());
     }
 }

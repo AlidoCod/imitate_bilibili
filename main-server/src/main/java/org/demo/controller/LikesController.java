@@ -1,5 +1,6 @@
 package org.demo.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +50,7 @@ public class LikesController {
     @Operation(summary = "视频点赞数量")
     @EnableAutoLog
     @GetMapping("/nums/video")
-    public Result<Void> oneVideoLikesNums(@RequestParam("videoId") Long videoId) {
+    public Result<Void> oneVideoLikesNums(@RequestParam("videoId") Long videoId) throws JsonProcessingException {
         return likesService.oneVideoLikesNums(videoId);
     }
 

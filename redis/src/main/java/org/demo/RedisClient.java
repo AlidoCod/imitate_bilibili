@@ -60,6 +60,10 @@ public class RedisClient {
         return stringRedisTemplate.opsForValue().increment(key);
     }
 
+    public Long decrease(String key) {
+        return stringRedisTemplate.opsForValue().decrement(key);
+    }
+
     /**
      * 避免String对象转化Json时发生异常
      */
@@ -70,11 +74,15 @@ public class RedisClient {
     /**
      * 普通的get方法，不会自动重建缓存。
      */
-    public <T> T get(String keyPrefix, String keySuffix, Class<T> clazz) throws JsonProcessingException {
-        String value = stringRedisTemplate.opsForValue().get(keyPrefix + keySuffix);
+    public <T> T get(String key, Class<T> clazz) throws JsonProcessingException {
+        String value = stringRedisTemplate.opsForValue().get(key);
         if (value == null)
             return null;
         return readValue(value, clazz);
+    }
+
+    public <T> T get(String keyPrefix, String keySuffix, Class<T> clazz) throws JsonProcessingException {
+        return get(keyPrefix + keySuffix, clazz);
     }
 
     private <T> T readValue(String value, Class<T> clazz) throws JsonProcessingException {
