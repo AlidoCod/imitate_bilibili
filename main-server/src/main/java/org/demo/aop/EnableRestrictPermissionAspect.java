@@ -5,7 +5,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.demo.aop.annotation.EnableRestrictPermission;
-import org.demo.pojo.GlobalRuntimeException;
+import org.demo.pojo.base.GlobalRuntimeException;
 import org.demo.pojo.base.ResponseEnum;
 import org.demo.pojo.base.Role;
 import org.demo.util.ThreadHolder;

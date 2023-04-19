@@ -20,6 +20,7 @@
         <module>image-service</module>
         <module>video-service</module>
         <module>series-service</module>
+        <module>likes-service</module>
     </modules>
 
     <properties>

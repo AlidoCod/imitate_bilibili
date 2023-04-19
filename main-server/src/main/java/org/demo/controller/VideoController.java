@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +11,9 @@ import org.demo.aop.annotation.EnableAutoLog;
 import org.demo.dto.VideoUpdateDto;
 import org.demo.dto.file.VideoMergeParamDto;
 import org.demo.service.VideoService;
+import org.demo.service.MultipartFileSender;
 import org.demo.vo.Result;
+import org.springframework.context.ApplicationContext;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +28,7 @@ public class VideoController {
 
     private final VideoService videoService;
 
+    private final ApplicationContext applicationContext;
     @Operation(summary = "视频MD5校验", description = "视频上传前确保视频分块在数据库/文件系统不存在")
     @ApiResponse(responseCode = "200", description = "yes, 表示通过了检查，视频在数据库不存在; no表示未通过检查, 视频已存在, 不能重复上传")
     @EnableAutoLog
@@ -63,8 +64,9 @@ public class VideoController {
     @Operation(summary = "断点下载，利用Http Range")
     @EnableAutoLog
     @GetMapping(value = "/play/{videoId}")
-    public void play(@PathVariable("videoId") @NotNull Long videoId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-        videoService.play(videoId, httpServletRequest, httpServletResponse);
+    public void play(@PathVariable("videoId") @NotNull Long videoId) throws Exception {
+        MultipartFileSender multipartFileSender = applicationContext.getBean("multipartFileSender", MultipartFileSender.class);
+        multipartFileSender.sent(videoId);
     }
 
     @Operation(summary = "视频信息更新")

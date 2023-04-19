@@ -28,11 +28,11 @@ public class IPFilter extends OncePerRequestFilter {
 
     private static final String IP_PREFIX = "ip:";
 
-    private static final int MAXIMUM_VISIT = 50;
+    private static final int MAXIMUM_VISIT = 100;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("【IP-Filter】 start success");
+        log.debug("【IP-Filter】 start success");
         String ip = IP_PREFIX + IPUtil.getIpAddress(request);
 
         // 不会存在一个IP永远出不来的情况，因为每次后续访问都有机会重新加上过期时间。有必要保证原子性吗？没必要，因为这会大大降低访问速度，即使过期时间后加上也无所谓，多一次少一次没关系。

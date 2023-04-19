@@ -1,6 +1,7 @@
 package org.demo.helper;
 
 import lombok.RequiredArgsConstructor;
+import org.demo.Consumer;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -46,5 +47,16 @@ public class RedisHSetHelper {
 
     public Long getSize(String key) {
         return stringRedisTemplate.opsForSet().size(key);
+    }
+
+    public Set<String> getKeys(String pattern) {
+        return stringRedisTemplate.keys(pattern);
+    }
+
+    public void clear(String key, Consumer consumer) {
+        while (getSize(key) != 0) {
+            String value = stringRedisTemplate.opsForSet().pop(key);
+            consumer.consume(value);
+        }
     }
 }

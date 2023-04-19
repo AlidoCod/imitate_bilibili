@@ -13,7 +13,7 @@ import org.demo.constant.CacheEntry;
 import org.demo.constant.EntityConstant;
 import org.demo.dto.file.MultipartFileParamDto;
 import org.demo.mapper.ImageMapper;
-import org.demo.pojo.GlobalRuntimeException;
+import org.demo.pojo.base.GlobalRuntimeException;
 import org.demo.pojo.Image;
 import org.demo.util.ContentTypeUtil;
 import org.demo.vo.Result;

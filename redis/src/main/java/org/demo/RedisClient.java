@@ -56,6 +56,10 @@ public class RedisClient {
         return Boolean.TRUE.equals(stringRedisTemplate.opsForValue().setIfAbsent(keyPrefix + keySuffix, getJsonString(value), time, unit));
     }
 
+    public Long increase(String key) {
+        return stringRedisTemplate.opsForValue().increment(key);
+    }
+
     /**
      * 避免String对象转化Json时发生异常
      */

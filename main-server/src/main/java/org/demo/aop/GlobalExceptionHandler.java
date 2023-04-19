@@ -2,7 +2,7 @@ package org.demo.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.demo.vo.Result;
-import org.demo.pojo.GlobalRuntimeException;
+import org.demo.pojo.base.GlobalRuntimeException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

@@ -1,7 +1,7 @@
 package org.demo.util;
 
 
-import org.demo.pojo.GlobalRuntimeException;
+import org.demo.pojo.base.GlobalRuntimeException;
 import org.demo.pojo.User;
 import org.demo.pojo.base.ResponseEnum;
 import org.demo.pojo.base.Role;

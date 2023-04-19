@@ -1,6 +1,4 @@
-package org.demo.pojo;
-
-import org.demo.pojo.base.ResponseEnum;
+package org.demo.pojo.base;
 
 public class GlobalRuntimeException extends RuntimeException{
 

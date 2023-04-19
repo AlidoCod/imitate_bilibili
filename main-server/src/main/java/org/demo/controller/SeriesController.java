@@ -40,7 +40,7 @@ public class SeriesController {
         return seriesService.create(dto);
     }
 
-    @Operation(summary = "查询合集")
+    @Operation(summary = "查询自己创建的合集")
     @EnableAutoLog
     @GetMapping(value = "/query")
     public Result<List<Series>> query() {

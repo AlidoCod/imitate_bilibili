@@ -68,6 +68,12 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>likes-service</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!--Web依赖配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

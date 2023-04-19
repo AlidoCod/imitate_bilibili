@@ -10,6 +10,7 @@ import org.demo.service.FollowService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -32,6 +33,9 @@ public class ModuleTest {
     @Autowired
     FollowService followService;
 
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
+
     @Test
     public void  mapperTest() {
         userMapper.selectList(null).forEach(System.out::println);
@@ -53,5 +57,11 @@ public class ModuleTest {
     public void mpPageTest() {
         log.warn("???: {}", followService.getFollowers(new Page<>(1, 10), 1641708143060385794L).getRecords());
         log.warn("{}", userMapper.selectUserVoPage(new Page<>(1, 10), Set.of(String.valueOf(1641708143060385794L))).getRecords());
+    }
+
+    @Test
+    public void testKeys() {
+        Set<String> keys = stringRedisTemplate.keys("PERSIST:SERIES:ID:*");
+        keys.parallelStream().forEach(log::debug);
     }
 }

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.demo.constant.EntityConstant;
-import org.demo.pojo.GlobalRuntimeException;
+import org.demo.pojo.base.GlobalRuntimeException;
 import org.demo.pojo.base.ResponseEnum;
 
 /**

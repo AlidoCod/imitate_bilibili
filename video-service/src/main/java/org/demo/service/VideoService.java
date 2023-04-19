@@ -14,7 +14,7 @@ import org.demo.dto.file.VideoMergeParamDto;
 import org.demo.mapper.ImageMapper;
 import org.demo.mapper.SeriesMapper;
 import org.demo.mapper.VideoMapper;
-import org.demo.pojo.GlobalRuntimeException;
+import org.demo.pojo.base.GlobalRuntimeException;
 import org.demo.pojo.Video;
 import org.demo.util.ContentTypeUtil;
 import org.demo.util.ObjectConverter;

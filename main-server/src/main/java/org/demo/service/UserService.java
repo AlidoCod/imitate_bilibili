@@ -13,7 +13,7 @@ import org.demo.dto.file.MultipartFileParamDto;
 import org.demo.dto.user.UserUpdateDto;
 import org.demo.mapper.ImageMapper;
 import org.demo.mapper.UserMapper;
-import org.demo.pojo.GlobalRuntimeException;
+import org.demo.pojo.base.GlobalRuntimeException;
 import org.demo.pojo.Image;
 import org.demo.pojo.User;
 import org.demo.vo.Result;

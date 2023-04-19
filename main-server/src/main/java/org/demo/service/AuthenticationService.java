@@ -11,7 +11,7 @@ import org.demo.constant.EntityConstant;
 import org.demo.dto.LoginDto;
 import org.demo.dto.RegisterDto;
 import org.demo.mapper.UserMapper;
-import org.demo.pojo.GlobalRuntimeException;
+import org.demo.pojo.base.GlobalRuntimeException;
 import org.demo.pojo.User;
 import org.demo.util.IPUtil;
 import org.demo.util.JwtProvider;

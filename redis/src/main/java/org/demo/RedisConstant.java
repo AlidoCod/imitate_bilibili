@@ -17,4 +17,8 @@ public class RedisConstant {
     public static final String PERSIST_FAN_ID = "PERSIST:FAN:ID:";
 
     public static final String PERSIST_SERIES_ID = "PERSIST:SERIES:ID:";
+
+    public static final String CACHE_LIKES_ID = "CACHE:LIKES:ID:";
+
+    public static final String PERSIST_LIKES_ID_NUMS = "PERSIST:LIKES:ID:NUMS:";
 }
