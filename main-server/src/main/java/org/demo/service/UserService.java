@@ -113,8 +113,9 @@ public class UserService {
         String md5 = dto.getMd5().substring(0, 32);
         // 避免用户重复更新相同头像
         Image image = imageMapper.selectById(ThreadHolder.getUser().getImageId());
-        if (image != null && image.getMd5().equals(md5))
+        if (image != null && image.getMd5().equals(md5)) {
             return Result.success();
+        }
 
         String username = ThreadHolder.getUsername();
 
@@ -173,8 +174,9 @@ public class UserService {
     public Result<Void> downloadCover(HttpServletResponse response) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         Long imageId = ThreadHolder.getUser().getImageId();
         Image image = imageMapper.selectById(imageId);
-        if (image == null)
+        if (image == null) {
             return Result.fail("未设置头像");
+        }
         ServletOutputStream outputStream = response.getOutputStream();
         minioService.download(EntityConstant.IMAGE_BUCKET, image.getImagePath(), outputStream);
         outputStream.flush();

@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 @Component(value = "multipartFileSender")
 @RequiredArgsConstructor
-@Scope("prototype")
+@Scope("request")
 public class MultipartFileSender {
 
     private static final int DEFAULT_BUFFER_SIZE = 20480; // ..bytes = 20KB.

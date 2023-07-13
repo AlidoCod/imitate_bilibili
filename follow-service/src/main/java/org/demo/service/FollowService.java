@@ -108,8 +108,9 @@ public class FollowService {
         Random random = new Random(System.currentTimeMillis());
         for (int i = 0; i < num; i++) {
             int size = list.size();
-            if (size == 0)
+            if (size == 0) {
                 break;
+            }
             // 避免数组越界
             int index = random.nextInt(size);
             User user = userMapper.selectOne(new QueryWrapper<User>().eq("id", list.get(index)));

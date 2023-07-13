@@ -10,7 +10,6 @@ import org.demo.TextWebSocketFrameHandler;
 import org.demo.mapper.BarrageMapper;
 import org.demo.pojo.Barrage;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +21,6 @@ public class ConsumeBarrageService {
 
     private final ObjectMapper objectMapper;
 
-    @Transactional
     public void consume(Long id, Barrage barrage) throws Exception{
 
         barrageMapper.insert(barrage);

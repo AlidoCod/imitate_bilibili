@@ -1,4 +1,4 @@
-package org.demo.core;
+package org.demo.test;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.minio.errors.*;

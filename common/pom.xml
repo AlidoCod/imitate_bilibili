@@ -18,12 +18,12 @@
 
 
     <dependencies>
-        <!--content-type解析-->
-        <dependency>
-            <groupId>com.j256.simplemagic</groupId>
-            <artifactId>simplemagic</artifactId>
-            <version>1.17</version>
-        </dependency>
+            <!--content-type解析-->
+            <dependency>
+                <groupId>com.j256.simplemagic</groupId>
+                <artifactId>simplemagic</artifactId>
+                <version>1.17</version>
+            </dependency>
         <!--Web依赖配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

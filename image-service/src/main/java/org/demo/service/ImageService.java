@@ -47,8 +47,9 @@ public class ImageService {
         Image image = new Image();
         try {
             // MD5校验
-            if (!verifyMd5(multipartFile, dto.getMd5()))
+            if (!verifyMd5(multipartFile, dto.getMd5())) {
                 throw GlobalRuntimeException.of("MD5校验失败，文件损坏");
+            }
 
             // MD5若一致，则秒传
             Image one = imageMapper.selectOne(new QueryWrapper<Image>().eq("md5", dto.getMd5()));
@@ -80,8 +81,9 @@ public class ImageService {
         Image image = new Image();
         image.setMd5(md5);
         image = imageMapper.selectOne(new QueryWrapper<Image>().eq("md5", md5));
-        if (image.getId() == null)
+        if (image.getId() == null) {
             return Result.fail("未找到对应的图片文件");
+        }
         try {
             if (minioService.getDownloadInputStream(EntityConstant.IMAGE_BUCKET, image.getImagePath()) != null) {
                 return Result.success(String.valueOf(image.getId()));
@@ -98,8 +100,9 @@ public class ImageService {
 
     public Result<Void> downloadImage(Long imageId, HttpServletResponse response) {
         Image image = imageMapper.selectById(imageId);
-        if (image == null)
+        if (image == null) {
             return Result.fail("图片id不存在");
+        }
         try {
             minioService.download(EntityConstant.IMAGE_BUCKET, image.getImagePath(), response.getOutputStream());
             return Result.success();
@@ -114,14 +117,15 @@ public class ImageService {
     }
 
 
-    private String getFileFolder() {
-        LocalDate now = LocalDate.now();
-        // 如果缓存存在，则直接返回
-        if (entry != null && entry.getKey().equals(now))
+        private String getFileFolder() {
+            LocalDate now = LocalDate.now();
+            // 如果缓存存在，则直接返回
+            if (entry != null && entry.getKey().equals(now)) {
+                return entry.getValue();
+            }
+            String s = "/" + now.toString().replace("-", "/") + "/";
+            entry = new CacheEntry<>(now, s);
             return entry.getValue();
-        String s = "/" + now.toString().replace("-", "/") + "/";
-        entry = new CacheEntry<>(now, s);
-        return entry.getValue();
-    }
+        }
 
 }

@@ -76,8 +76,9 @@ public class RedisClient {
      */
     public <T> T get(String key, Class<T> clazz) throws JsonProcessingException {
         String value = stringRedisTemplate.opsForValue().get(key);
-        if (value == null)
+        if (value == null) {
             return null;
+        }
         return readValue(value, clazz);
     }
 

@@ -56,10 +56,11 @@ public class VideoService {
         String chunkFilePath = getChunkFileFolderPath(md5) + index;
         try {
             InputStream inputStream = minioService.getDownloadInputStream(EntityConstant.VIDEO_BUCKET, chunkFilePath);
-            if (inputStream != null)
+            if (inputStream != null) {
                 return Result.success(EntityConstant.NO + ", chunk index: " + index);
-            else
+            } else {
                 return Result.success(EntityConstant.YES);
+            }
         } catch (Exception e) {
             return Result.success(EntityConstant.YES);
         }
@@ -80,11 +81,13 @@ public class VideoService {
         Video video = new Video();
         Long seriesId = dto.getSeriesId();
         // 验证系列ID，确认是本人创建且系列ID存在
-        if (seriesId != null && seriesMapper.selectByMap(Map.of("id", seriesId, "user_id", ThreadHolder.getUser().getId())) != null)
+        if (seriesId != null && seriesMapper.selectByMap(Map.of("id", seriesId, "user_id", ThreadHolder.getUser().getId())) != null) {
             video.setSeriesId(seriesId);
+        }
         // 验证封面是否存在
-        if (imageMapper.selectById(dto.getImageId()) == null)
+        if (imageMapper.selectById(dto.getImageId()) == null) {
             return Result.fail("封面不存在，视频分块已上传成功，请重新上传封面并请求");
+        }
         // 属性设置
         String md5 = dto.getMd5();
         String path = getVideoFileFolderPath(md5);
@@ -119,17 +122,20 @@ public class VideoService {
 
     public Result<Void> play(Long videoId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception{
         Video video = videoMapper.selectOne(new QueryWrapper<Video>().eq("id", videoId));
-        if (httpServletRequest.getHeader("Range") == null)
+        if (httpServletRequest.getHeader("Range") == null) {
             return Result.fail("不存在的Range请求头");
-        if (!video.getVideoSuffix().equals(".mp4"))
+        }
+        if (!".mp4".equals(video.getVideoSuffix())) {
             return Result.fail("抱歉，此视频非mp4格式，不可直接播放，可下载后播放");
+        }
         BufferedInputStream inputStream = new BufferedInputStream(minioService.getDownloadInputStream(EntityConstant.VIDEO_BUCKET, video.getVideoPath()), 8 * EntityConstant.KB);
         // 修改默认缓冲区为http3最大值8KB
         Long size = video.getSize();
 
         CacheEntry<Long, Long> range = analyzeRange(httpServletRequest.getHeader("Range"), size);
-        if (range == null)
+        if (range == null) {
             return Result.fail("错误的Range请求头，请检查请求头设置，格式为startIndex - endIndex");
+        }
         /*
          * 设置Http响应头
          * */
@@ -178,10 +184,12 @@ public class VideoService {
     @Transactional
     public Result<Void> delete(Long id) {
         Video video = videoMapper.selectById(id);
-        if (video == null)
+        if (video == null) {
             return Result.success("视频ID不存在");
-        if (!(videoMapper.deleteById(id) == 1))
+        }
+        if (!(videoMapper.deleteById(id) == 1)) {
             return Result.fail("数据库删除失败，发生异常");
+        }
         try {
             minioService.remove(EntityConstant.VIDEO_BUCKET, video.getVideoPath());
         } catch (Exception e) {
@@ -199,8 +207,9 @@ public class VideoService {
         //去除所有空格
         String[] split = range.split("-");
         //分割字符串
-        if (split.length != 2)
+        if (split.length != 2) {
             return null;
+        }
         Long start = Long.parseLong(split[0]);
         Long end = Long.parseLong(split[1]);
         //说明是未知range，格式错误

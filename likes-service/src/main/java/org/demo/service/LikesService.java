@@ -33,9 +33,10 @@ public class LikesService {
     private static final String CACHE_LIKES_ID = RedisConstant.CACHE_LIKES_ID;
     private static final String PERSIST_LIKES_ID_NUMS = RedisConstant.PERSIST_LIKES_ID_NUMS;
 
-    private static final Long HALF_HOUR = 1800000L; //半小时刷一次
+    //半小时刷一次
+    private static final Long HALF_HOUR = 1800000L;
 
-    private static final Long testRate = 1000L;
+    private static final Long TEST_RATE = 1000L;
     public Result<Void> like(Long userId, Long videoId) {
 
         // 缓存点赞信息
@@ -75,12 +76,15 @@ public class LikesService {
     * */
     public Result<Void> unlike(Long userId, Long videoId) {
         boolean flag = false;
-        if (redisHSetHelper.removeMember(CACHE_LIKES_ID + videoId, String.valueOf(userId)))
+        if (redisHSetHelper.removeMember(CACHE_LIKES_ID + videoId, String.valueOf(userId))) {
             flag = true;
-        if (!flag && likesMapper.deleteByMap(Map.of("user_id", userId, "video_id", videoId)) == 1)
+        }
+        if (!flag && likesMapper.deleteByMap(Map.of("user_id", userId, "video_id", videoId)) == 1) {
             flag = true;
-        if (flag)
+        }
+        if (flag) {
             redisClient.decrease(PERSIST_LIKES_ID_NUMS + videoId);
+        }
         return Result.ok();
     }
 

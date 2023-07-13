@@ -54,20 +54,24 @@ public class SeriesService {
     public Result<Void> delete(Long id) {
 
         Series series = seriesMapper.selectById(id);
-        if (series == null)
+        if (series == null) {
             return Result.success("此id对应的合集不存在");
-        if (!Objects.equals(series.getUserId(), ThreadHolder.getUser().getId()))
+        }
+        if (!Objects.equals(series.getUserId(), ThreadHolder.getUser().getId())) {
             return Result.success("你没有权限删除非自己创建的合集");
+        }
         return seriesMapper.deleteById(id) == 1 ? Result.success() : Result.fail();
     }
 
     public Result<Void> update(SeriesUpdateDto dto) throws JsonProcessingException {
 
         Series series = seriesMapper.selectById(dto.getId());
-        if (series == null)
+        if (series == null) {
             return Result.success("此id对应的合集不存在");
-        if (!Objects.equals(series.getUserId(), ThreadHolder.getUser().getId()))
+        }
+        if (!Objects.equals(series.getUserId(), ThreadHolder.getUser().getId())) {
             return Result.success("你没有权限更新非自己创建的合集");
+        }
         Series convert = ObjectConverter.convert(dto, Series.class);
         return seriesMapper.updateById(convert) == 1 ? Result.success() : Result.fail();
     }

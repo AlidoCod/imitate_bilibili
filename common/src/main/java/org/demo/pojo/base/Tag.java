@@ -28,8 +28,9 @@ public enum Tag {
      */
     public static Tag getTagByValue(int value) {
         for (final Tag tag : values()) {
-            if (tag.value == value)
+            if (tag.value == value) {
                 return tag;
+            }
         }
         return null;
     }

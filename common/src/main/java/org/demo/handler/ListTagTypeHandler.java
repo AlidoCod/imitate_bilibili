@@ -54,8 +54,9 @@ public class ListTagTypeHandler extends BaseTypeHandler<List<Tag>> {
     }
 
     private List<Tag> parseValue(String value) {
-        if (Strings.isNullOrEmpty(value))
+        if (Strings.isNullOrEmpty(value)) {
             return new ArrayList<>();
+        }
         Iterable<String> values = Splitter.on(',').split(value);
         List<Tag> list = new ArrayList<>();
         values.forEach((i) -> {

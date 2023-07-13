@@ -34,8 +34,9 @@ public class EnableRestrictPermissionAspect {
         Role userRole = ThreadHolder.getRole();
         // 枚举对象是单例唯一的
         for (Role role : roles) {
-            if (userRole == role)
+            if (userRole == role) {
                 return joinPoint.proceed();
+            }
         }
         throw GlobalRuntimeException.of(ResponseEnum.HTTP_STATUS_403);
     }

@@ -10,13 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.demo.aop.annotation.EnableAutoLog;
 import org.demo.dto.VideoUpdateDto;
 import org.demo.dto.file.VideoMergeParamDto;
-import org.demo.service.VideoService;
 import org.demo.service.MultipartFileSender;
+import org.demo.service.VideoService;
 import org.demo.vo.Result;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.regex.Pattern;
 
 @Slf4j
 @Validated
@@ -81,5 +83,10 @@ public class VideoController {
     @GetMapping(value = "/delete")
     public Result<Void> delete(@RequestParam("id")Long id) throws JsonProcessingException {
         return videoService.delete(id);
+    }
+
+    public static void main(String[] args) {
+        Pattern pattern = Pattern.compile("^UPDATE:USER:ID::.*$");
+        System.out.println(pattern.matcher("UPDATE:USER:ID::1671370755721060354").matches());
     }
 }

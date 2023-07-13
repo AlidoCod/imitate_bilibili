@@ -40,4 +40,6 @@ public class BarrageConsumerListener {
             channel.basicNack(deliveryTag, true, false);
         }
     }
+
+
 }

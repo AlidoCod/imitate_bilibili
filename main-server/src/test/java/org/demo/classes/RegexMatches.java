@@ -1,4 +1,4 @@
-package org.demo.core.classes;
+package org.demo.classes;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
 
+/**
+ * @author Administrator
+ */
 @Slf4j
 @Component
 public class JwtProvider {
@@ -41,13 +44,13 @@ public class JwtProvider {
      * @return 如果为null, 则jwt token是错误的或者空值
      */
     public String parse(String token) {
-        DecodedJWT decodedJWT;
+        DecodedJWT decodedjwt;
         try {
-            decodedJWT = JWT.require(Algorithm.HMAC256(privateKey)).build().verify(token);
+            decodedjwt = JWT.require(Algorithm.HMAC256(privateKey)).build().verify(token);
         } catch (Exception ex) {
             return null;
         }
-        return decodedJWT.getAudience().get(0);
+        return decodedjwt.getAudience().get(0);
 
     }
 }

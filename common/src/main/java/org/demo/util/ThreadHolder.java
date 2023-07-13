@@ -43,8 +43,9 @@ public class ThreadHolder {
      */
     public static Role getRole() {
         User user = getUser();
-        if (user == null)
+        if (user == null) {
             throw GlobalRuntimeException.of(ResponseEnum.HTTP_STATUS_401);
+        }
         return user.getRole();
     }
 

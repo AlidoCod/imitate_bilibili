@@ -11,8 +11,8 @@ import org.demo.constant.EntityConstant;
 import org.demo.dto.LoginDto;
 import org.demo.dto.RegisterDto;
 import org.demo.mapper.UserMapper;
-import org.demo.pojo.base.GlobalRuntimeException;
 import org.demo.pojo.User;
+import org.demo.pojo.base.GlobalRuntimeException;
 import org.demo.util.IPUtil;
 import org.demo.util.JwtProvider;
 import org.demo.util.ThreadHolder;
@@ -41,15 +41,17 @@ public class AuthenticationService {
         // 先验证验证码是否正确
         verifyCode(registerDto.getVerifyCode(), request);
         // 再验证注册码是否正确
-        if (!registerDto.getRegisterCode().equals(SECRET_CODE))
+        if (!registerDto.getRegisterCode().equals(SECRET_CODE)) {
             throw GlobalRuntimeException.of("手机验证码输入错误，请重新输入");
+        }
         User user = new User();
         user.setUsername(registerDto.getUsername());
         user.setPassword(DigestUtils.md5DigestAsHex(registerDto.getPassword().getBytes(StandardCharsets.UTF_8)));
         // 随机生成昵称
         user.setNickname(EntityConstant.NICKNAME_PREFIX + RandomStringUtils.randomAscii(16));
-        if (userMapper.insert(user) != 1)
+        if (userMapper.insert(user) != 1) {
             throw GlobalRuntimeException.of("手机号已存在");
+        }
         // 将对象缓存入ThreadHolder
         ThreadHolder.setUser(user);
         // 重新查询user，写入SQL默认值，写入Redis缓存
@@ -68,14 +70,17 @@ public class AuthenticationService {
         // 利用电话号码查找
         User user = userMapper.selectOne(new QueryWrapper<User>().select().eq(true, "username", username));
         // 若失败，则利用邮箱查找
-        if (user == null)
+        if (user == null) {
             user = userMapper.selectOne(new QueryWrapper<User>().select().eq(true, "email", username));
-        if (user == null)
+        }
+        if (user == null) {
             throw GlobalRuntimeException.of("手机号码/邮箱未注册");
+        }
 
         // 设置线程对象
-        if (!password.equals(user.getPassword()))
+        if (!password.equals(user.getPassword())) {
             throw GlobalRuntimeException.of("密码错误");
+        }
         ThreadHolder.setUser(user);
         // 设置用户缓存
         redisClient.setWithExpiredTime(RedisConstant.CACHE_USER_USERNAME, user.getUsername(), user, 30L, TimeUnit.DAYS);
@@ -86,9 +91,11 @@ public class AuthenticationService {
         verifyCode = verifyCode.toLowerCase(Locale.ROOT);
         String ip = IPUtil.getIpAddress(request);
         String code = redisClient.get(RedisConstant.VERIFY_CODE_IP, ip, String.class);
-        if (code == null)
+        if (code == null) {
             throw GlobalRuntimeException.of("验证码已过期");
-        if (!code.equals(verifyCode))
+        }
+        if (!code.equals(verifyCode)) {
             throw GlobalRuntimeException.of("验证码错误");
+        }
     }
 }

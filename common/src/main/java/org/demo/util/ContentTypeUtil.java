@@ -16,8 +16,9 @@ public class ContentTypeUtil {
         if (position >= 0) {
             String extension = path.substring(position);
             ContentInfo extensionMatch = ContentInfoUtil.findExtensionMatch(extension);
-            if (extensionMatch != null)
+            if (extensionMatch != null) {
                 contentType = extensionMatch.getMimeType();
+            }
         }
 
         return contentType;

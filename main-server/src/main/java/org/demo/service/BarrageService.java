@@ -40,13 +40,15 @@ public class BarrageService {
          * 因此，不必上锁，弹幕并不需要非常强的可达性。
          * */
 
-        if (id / (Long.MAX_VALUE / 2) == 1)
+        if (id / (Long.MAX_VALUE / 2) == 1) {
             stringRedisTemplate.opsForValue().set(RedisConstant.BARRAGE_LOCK_ID, String.valueOf(0));
+        }
 
         Barrage barrage = new Barrage();
         barrage.setUserId(userId);
         barrage.setVideoId(videoId);
         barrage.setContent(message);
+        barrage.setVideoTime(videoTime);
         rabbitTemplate.convertAndSend(RabbitMQConstant.DEMO_EXCHANGE, RabbitMQConstant.BARRAGE_ROUTING_KEY, objectMapper.writeValueAsString(barrage), message1 -> {
             message1.getMessageProperties().setHeader("msg-id", id);
             return message1;

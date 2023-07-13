@@ -48,8 +48,9 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("token");
         // 如果当前线程中存在threadHolder那么无需token直接放行
-        if (ThreadHolder.getUser() != null)
+        if (ThreadHolder.getUser() != null) {
             return true;
+        }
         // 没有token，还请求，返回没有权限
         if (token == null) {
             responseHelper.writeObject(response, Result.responseEnum(ResponseEnum.HTTP_STATUS_401));
@@ -70,4 +71,11 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    /**
+     *  避免内存泄露
+     */
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        ThreadHolder.removeUser();
+    }
 }

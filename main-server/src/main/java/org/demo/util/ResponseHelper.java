@@ -23,10 +23,11 @@ public class ResponseHelper {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/json;charset=UTF-8");
         try (PrintWriter writer = response.getWriter()){
-            if (o.getClass() != String.class)
+            if (o.getClass() != String.class) {
                 writer.write(objectMapper.writeValueAsString(o));
-            else
+            } else {
                 writer.write(o.toString());
+            }
             response.flushBuffer();
         } catch (IOException e) {
             log.error("", e);
